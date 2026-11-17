@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Estudos SUSEP</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#1d1d1b;--mut:#6b6a65;--line:#e3e1da;--acc:#1f5f8b;--accs:#e6eff6;--ok:#2e7d4f;--oks:#e5f3ea;--bad:#b3412f;--bads:#f8e7e3;--warn:#9a6400}
+@media (prefers-color-scheme:dark){:root{--bg:#141413;--card:#1e1e1c;--ink:#ecebe6;--mut:#a09e97;--line:#34332f;--acc:#7cb8e0;--accs:#1d2a35;--ok:#74c595;--oks:#1b2d22;--bad:#e8897a;--bads:#36201c;--warn:#e0b04f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Segoe UI",system-ui,Roboto,sans-serif}
+header{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);z-index:5}
+.top{max-width:980px;margin:0 auto;padding:12px 16px 6px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h1{font-size:19px;margin:0}
+.count{margin-left:auto;font-weight:700;color:var(--acc)}
+nav{max-width:980px;margin:0 auto;padding:4px 16px 10px;display:flex;gap:6px;overflow-x:auto}
+nav button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 13px;border-radius:999px;cursor:pointer;white-space:nowrap;font:inherit;font-size:14px}
+nav button.on{background:var(--acc);border-color:var(--acc);color:var(--bg)}
+main{max-width:980px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+h2{font-size:18px;margin:0 0 10px}h3{font-size:16px;margin:16px 0 6px}
+.mut{color:var(--mut)}.small{font-size:14px}
+.btn{border:1px solid var(--acc);background:var(--acc);color:var(--bg);padding:8px 14px;border-radius:8px;cursor:pointer;font:inherit;font-size:14px;margin:4px 6px 4px 0}
+.btn.g{background:transparent;color:var(--acc)}
+.btn.ok{background:var(--ok);border-color:var(--ok)}.btn.bad{background:var(--bad);border-color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:default}
+.day{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.day:first-child{border-top:0}
+.day input{width:20px;height:20px;margin-top:3px;flex:none}
+.day.today{background:var(--accs);margin:0 -18px;padding:12px 18px}
+.day.done .dt{text-decoration:line-through;color:var(--mut)}
+.dl{font-weight:700;min-width:92px;flex:none}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--accs);color:var(--acc);margin-right:4px}
+ul{margin:6px 0;padding-left:20px}li{margin:3px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;min-width:80px}
+.bar i{display:block;height:100%;background:var(--acc)}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:11px 13px;border-radius:9px;margin:7px 0;cursor:pointer;font:inherit}
+.opt:hover{border-color:var(--acc)}
+.opt.sel{border-color:var(--acc);background:var(--accs)}
+.opt.right{border-color:var(--ok);background:var(--oks)}
+.opt.wrong{border-color:var(--bad);background:var(--bads)}
+.just{border-left:4px solid var(--acc);background:var(--accs);padding:10px 14px;border-radius:6px;margin-top:10px}
+.grid{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0}
+.grid button{width:34px;height:30px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;cursor:pointer;font-size:13px}
+.grid button.a{background:var(--accs);border-color:var(--acc)}.grid button.cur{outline:2px solid var(--acc)}
+.fc{min-height:170px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:19px;padding:24px;border:1px dashed var(--line);border-radius:12px;margin:10px 0}
+textarea,input[type=text],select,input[type=number]{width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+label{display:block;margin:8px 0 3px;font-size:14px;color:var(--mut)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+.kpi b{display:block;font-size:24px}
+.warn{color:var(--warn)}.okc{color:var(--ok)}.badc{color:var(--bad)}
+.res h3{color:var(--acc)}
+.res table td:first-child{font-weight:600;white-space:nowrap}
+.fix{border-left:4px solid var(--warn);padding:8px 12px;background:var(--card);margin:8px 0}
+</style>
+</head>
+<body>
+<header>
+  <div class="top"><h1>Prova SUSEP · Vida e Previdência</h1><span class="count" id="count"></span></div>
+  <nav id="nav"></nav>
+</header>
+<main id="main"></main>
+
+<script>
+// ======================= DADOS =======================
+const PROVA = new Date(2026, 11, 5);
+const MAT = {
+  riscos: {n: 'Gerenciamento de Riscos', p: 10},
+  pessoas: {n: 'Seguro de Pessoas', p: 10},
+  prev: {n: 'Previdência Complementar', p: 10},
+  saude: {n: 'Saúde Suplementar', p: 10},
+  oper: {n: 'Operações de Seguros', p: 5},
+  preco: {n: 'Risco e Precificação', p: 5}
+};
+
+// acoes: ['q',mat] treino da matéria · ['fc',mat] flashcards · ['mix',n] misto · ['sim'] simulado completo · ['err'] erros · ['res',mat] resumo
+const PLANO = [
+  {d:'2026-11-17', t:'Diagnóstico', i:['Faça o misto de 20 questões SEM estudar antes: serve só para ver onde você está.','Abra o regulamento/edital da sua prova: confirme data, horário, se é online, nota mínima e documentos.','Pegue um caderno para ser o "caderno de erros" (ou use a aba Erros daqui).'], a:[['mix',20]]},
+  {d:'2026-11-18', t:'Seguro de Pessoas I', i:['Coberturas: morte, morte acidental, IPA, IFPD, DIT, DMHO, funeral.','O que é acidente pessoal (súbito, externo, involuntário, violento).','Apostila + resumo daqui. Depois treino da matéria.'], a:[['res','pessoas'],['q','pessoas']]},
+  {d:'2026-11-19', t:'Seguro de Pessoas II', i:['Individual × grupo, estipulante, contributário.','Prestamista, beneficiários, suicídio (2 anos), carência.','Flashcards de Pessoas.'], a:[['q','pessoas'],['fc','pessoas']]},
+  {d:'2026-11-20', t:'Previdência I', i:['Aberta × fechada: CNSP → SUSEP → EAPC / CNPC → PREVIC → EFPC.','Fases: diferimento → concessão → renda.','PGBL × VGBL (dedução de 12%, base do IR).'], a:[['res','prev'],['q','prev']]},
+  {d:'2026-11-21', t:'Previdência II', i:['Tabela progressiva × regressiva (35% → 10%).','Tipos de plano: VRGP, VAGP, VRSA, VDR, VRI.','Portabilidade e tipos de renda.'], a:[['q','prev'],['fc','prev']]},
+  {d:'2026-11-22', t:'Revisão + Simulado 1', i:['Releia os resumos de Pessoas e Previdência.','Misto de 25 questões. Para cada erro, escreva na aba Erros por que a certa é a certa.'], a:[['mix',25],['err']]},
+  {d:'2026-11-23', t:'Gerenciamento de Riscos I', i:['Risco puro × especulativo (segurável × não segurável).','Sistemático (mercado, sistema todo) × não sistemático (da instituição).','Tipos: mercado, crédito, liquidez, operacional.'], a:[['res','riscos'],['q','riscos']]},
+  {d:'2026-11-24', t:'Gerenciamento de Riscos II', i:['Processo: identificar → avaliar → tratar → monitorar.','Matriz frequência × severidade: evitar, transferir, reduzir, reter.','Mutualismo e lei dos grandes números.'], a:[['q','riscos'],['fc','riscos']]},
+  {d:'2026-11-25', t:'Saúde Suplementar I', i:['Lei 9.656/98, ANS (Lei 9.961/2000).','Seguro saúde × plano (reembolso), ressarcimento ao SUS.','Segmentações e plano-referência.'], a:[['res','saude'],['q','saude']]},
+  {d:'2026-11-26', t:'Saúde Suplementar II', i:['Carências: 24 h / 180 d / 300 d / CPT 24 meses.','Contratação, reajuste por idade (60+), rescisão.','Flashcards de Saúde.'], a:[['q','saude'],['fc','saude']]},
+  {d:'2026-11-27', t:'Operações de Seguros', i:['SNSP, subscrição, proposta (25 dias), apólice, endosso.','Cosseguro × resseguro × retrocessão.','Sinistro, regulação, franquia.'], a:[['res','oper'],['q','oper']]},
+  {d:'2026-11-28', t:'Risco e Precificação', i:['Prêmio puro → comercial → total.','Tábuas, antisseleção, provisões (IBNR, PMBaC).','Regimes financeiros. Treine Operações + Precificação.'], a:[['res','preco'],['q','preco'],['q','oper']]},
+  {d:'2026-11-29', t:'SIMULADO COMPLETO 1', i:['50 questões, 2 horas, cronometrado, sem consultar.','Se tiver o pré-prova da TopInvest, faça ele no lugar deste.','Corrija tudo: cada erro vira uma justificativa escrita.'], a:[['sim'],['err']]},
+  {d:'2026-11-30', t:'Ataque à pior matéria', i:['Abra Desempenho e veja a matéria com menor % de acerto.','Releia o resumo dela, refaça as questões erradas, faça flashcards.'], a:[['err']]},
+  {d:'2026-12-01', t:'Ataque à 2ª pior matéria', i:['Mesma coisa com a segunda pior.','Flashcards de todas as matérias (só caixa 1).'], a:[['err'],['fc','']]},
+  {d:'2026-12-02', t:'SIMULADO COMPLETO 2', i:['50 questões, 2 horas. Meta: 70% ou mais.','Correção com justificativa.'], a:[['sim'],['err']]},
+  {d:'2026-12-03', t:'Caderno de erros', i:['Refaça só as questões erradas até acertar todas.','Revise a lista "Números que caem" (aba Resumos).'], a:[['err'],['res','numeros']]},
+  {d:'2026-12-04', t:'Véspera leve', i:['Só flashcards e "Números que caem". Nada de matéria nova.','Separe documento; se a prova for online, teste computador, câmera e internet.','Durma cedo.'], a:[['fc',''],['res','numeros']]},
+  {d:'2026-12-05', t:'PROVA', i:['50 questões em 2 h ≈ 2 min 24 s por questão.','1ª passada: responda as fáceis e marque as dúvidas. 2ª passada: volte nas marcadas.','Leia o enunciado inteiro: palavras como EXCETO, INCORRETA, NÃO mudam tudo.'], a:[]}
+];
+
+const RES = {
+riscos: `
+<h3>Risco</h3><p>Evento <b>futuro, incerto, possível</b>, independente da vontade das partes, que pode causar prejuízo econômico.</p>
+<table>
+<tr><td>Risco puro</td><td>Só dá para <b>perder ou não perder</b>. Ex.: incêndio, roubo, morte. <b>É segurável.</b></td></tr>
+<tr><td>Risco especulativo</td><td>Dá para <b>perder, não perder ou ganhar</b>. Ex.: ações, loteria, abrir negócio. <b>Não é segurável</b> (seguro não pode dar lucro).</td></tr>
+<tr><td>Sistemático (de mercado)</td><td>Atinge o <b>sistema todo</b> (juros, inflação, crise). Diversificar não elimina.</td></tr>
+<tr><td>Não sistemático</td><td>Da <b>instituição / particular</b> (interno): greve, fraude, falha de gestão. Diversificação reduz.</td></tr>
+</table>
+<h3>Tipos de risco (instituições)</h3>
+<ul><li><b>Mercado</b>: variação de preços, juros, câmbio.</li><li><b>Crédito</b>: a contraparte não pagar.</li><li><b>Liquidez</b>: não ter dinheiro/caixa quando precisa.</li><li><b>Operacional</b>: falhas de pessoas, processos, sistemas ou eventos externos.</li><li><b>Subscrição</b> (seguradora): o risco aceito sair pior que o previsto.</li></ul>
+<h3>Processo de gerenciamento</h3><p><b>Identificar → Avaliar (frequência × severidade) → Tratar → Monitorar</b></p>
+<table><tr><th>Frequência</th><th>Severidade</th><th>Tratamento</th></tr>
+<tr><td>Alta</td><td>Alta</td><td><b>Evitar</b> (eliminar a atividade)</td></tr>
+<tr><td>Baixa</td><td>Alta</td><td><b>Transferir</b> (seguro)</td></tr>
+<tr><td>Alta</td><td>Baixa</td><td><b>Reduzir / prevenir</b></td></tr>
+<tr><td>Baixa</td><td>Baixa</td><td><b>Reter</b> (assumir; franquia é retenção parcial)</td></tr></table>
+<h3>Base do seguro</h3><ul><li><b>Mutualismo</b>: muitos contribuem para pagar as perdas de poucos.</li><li><b>Lei dos grandes números</b>: quanto mais riscos parecidos, mais previsível a perda média.</li><li><b>Riscos excluídos</b>: os que a apólice não cobre (ex.: atos dolosos do segurado). Não confunda com risco "interno".</li></ul>`,
+pessoas: `
+<h3>Coberturas</h3>
+<table>
+<tr><td>Morte</td><td>Natural ou acidental. Capital ao beneficiário.</td></tr>
+<tr><td>MA</td><td>Morte acidental.</td></tr>
+<tr><td>IPA</td><td>Invalidez permanente total ou parcial por <b>acidente</b>. Paga % do capital conforme tabela.</td></tr>
+<tr><td>IFPD</td><td>Invalidez funcional permanente total por <b>doença</b> (perda da existência independente).</td></tr>
+<tr><td>DIT</td><td>Diária por incapacidade temporária. Tem <b>franquia</b> (comum: 15 dias) e um <b>limite máximo de diárias</b> definido na apólice.</td></tr>
+<tr><td>DMHO</td><td><b>Reembolso</b> de despesas médicas, hospitalares e odontológicas decorrentes de <b>acidente</b>.</td></tr>
+<tr><td>Funeral</td><td>Despesas com o funeral.</td></tr>
+</table>
+<h3>Acidente pessoal</h3><p>Evento com data caracterizada, <b>súbito, externo, involuntário e violento</b>, que causa lesão física e por si só leva à morte, invalidez, incapacidade temporária ou tratamento. Doença <b>não</b> é acidente.</p>
+<h3>Individual × grupo</h3>
+<ul><li><b>Estipulante</b>: pessoa física ou jurídica que contrata o seguro para o grupo e <b>representa os segurados</b> perante a seguradora. Não é corretor.</li>
+<li><b>Contributário</b>: segurado paga parte ou todo o prêmio. <b>Não contributário</b>: estipulante paga tudo.</li>
+<li>Apólice coletiva; cada segurado recebe um <b>certificado</b>.</li></ul>
+<h3>Prestamista</h3><p>"Quem paga em caso de dívida": se o devedor morre ou fica inválido, o seguro <b>quita o saldo devedor</b>. O <b>credor</b> é o primeiro beneficiário.</p>
+<h3>Regras que caem</h3>
+<ul><li><b>Suicídio</b>: sem capital se for voluntário nos <b>2 primeiros anos</b> de vigência. Depois disso, é coberto. (Era o art. 798 do Código Civil; a Lei 15.040/2024, em vigor desde dez/2025, manteve os 2 anos.)</li>
+<li><b>Sem beneficiário indicado</b>: metade ao cônjuge não separado judicialmente, metade aos herdeiros.</li>
+<li>Capital de vida <b>não é herança</b> e <b>não responde pelas dívidas</b> do segurado.</li>
+<li>Pode ter <b>vários seguros de vida</b>, em várias seguradoras: vida não segue o princípio indenitário.</li>
+<li><b>Carência</b> pode existir, mas não vale para eventos de <b>acidente</b>.</li></ul>`,
+prev: `
+<h3>Estrutura</h3>
+<table><tr><th></th><th>Aberta</th><th>Fechada</th></tr>
+<tr><td>Quem pode entrar</td><td>Qualquer pessoa</td><td>Empregados de <b>patrocinador</b> ou associados de <b>instituidor</b></td></tr>
+<tr><td>Normatiza</td><td><b>CNSP</b></td><td><b>CNPC</b></td></tr>
+<tr><td>Fiscaliza</td><td><b>SUSEP</b></td><td><b>PREVIC</b></td></tr>
+<tr><td>Quem opera</td><td><b>EAPC</b> e seguradoras (S.A., com fins lucrativos)</td><td><b>EFPC</b> = fundo de pensão (sem fins lucrativos)</td></tr></table>
+<div class="fix">Correção da sua anotação: o CNSP é órgão <b>normativo</b> (faz as regras), não "informativo".</div>
+<p>Base legal: LC 109/2001. Previdência complementar é privada, facultativa e autônoma em relação ao INSS.</p>
+<h3>Fases</h3><p><b>Diferimento</b> (acumulação) → concessão → <b>pagamento do benefício</b> (renda ou pagamento único).</p>
+<h3>PGBL × VGBL</h3>
+<table><tr><th></th><th>PGBL</th><th>VGBL</th></tr>
+<tr><td>Natureza</td><td>Plano de previdência</td><td>Seguro de pessoas (cobertura por sobrevivência)</td></tr>
+<tr><td>Dedução no IR</td><td>Até <b>12% da renda bruta tributável</b>, só na declaração <b>completa</b></td><td>Não deduz</td></tr>
+<tr><td>IR no resgate</td><td>Sobre o <b>valor total</b></td><td>Só sobre os <b>rendimentos</b></td></tr>
+<tr><td>Indicado para</td><td>Declaração completa</td><td>Simplificada, isento ou quem já usa os 12%</td></tr></table>
+<h3>Tributação</h3>
+<ul><li><b>Progressiva</b>: retém 15% na fonte e ajusta na declaração anual.</li>
+<li><b>Regressiva</b> (definitiva), pelo tempo de cada aporte: até 2 anos <b>35%</b> · 2–4: 30% · 4–6: 25% · 6–8: 20% · 8–10: 15% · acima de 10 anos <b>10%</b>.</li>
+<li>Desde a Lei 14.803/2024, a escolha da tabela pode ser feita até o 1º resgate ou recebimento do benefício.</li></ul>
+<h3>Tipos de plano (P = previdência, V = vida)</h3>
+<table>
+<tr><td>PGBL / VGBL</td><td>Sem garantia mínima: a rentabilidade do fundo vai inteira para o participante.</td></tr>
+<tr><td>PRGP / VRGP</td><td>Garante <b>taxa de juros + índice de atualização</b>, com reversão de resultados financeiros (performance).</td></tr>
+<tr><td>PAGP / VAGP</td><td>Garante a <b>atualização por índice</b> de preços, com performance.</td></tr>
+<tr><td>PRSA / VRSA</td><td>Garante <b>juros, sem atualização</b> monetária.</td></tr>
+<tr><td>PDR / VDR</td><td><b>Desempenho referenciado</b>: garantia mínima de desempenho atrelada a % de um índice de renda fixa. (Sua anotação "desempenho mínimo garantido" está certa.)</td></tr>
+<tr><td>PRI / VRI</td><td><b>Pagamento único</b>, com <b>renda imediata</b>.</td></tr></table>
+<h3>Outros pontos</h3>
+<ul><li><b>Portabilidade</b>: levar o saldo para outro plano sem IR, só entre planos da mesma natureza (PGBL→PGBL, VGBL→VGBL).</li>
+<li><b>Rendas</b>: vitalícia; temporária; vitalícia com prazo mínimo garantido (se morrer antes, o beneficiário recebe até completar o prazo); vitalícia reversível ao beneficiário/cônjuge; pagamento único.</li>
+<li><b>Taxa de carregamento</b>: sobre as contribuições. <b>Taxa de administração</b>: sobre o patrimônio do fundo.</li>
+<li><b>Pecúlio</b>: pagamento único por morte ou invalidez (cobertura de risco).</li></ul>`,
+saude: `
+<h3>Leis e órgão</h3>
+<ul><li><b>Lei 9.656/1998</b>: planos e seguros privados de saúde.</li><li><b>Lei 9.961/2000</b>: cria a <b>ANS</b>, ligada ao Ministério da Saúde. Ela regula, normatiza e fiscaliza operadoras, define o rol de procedimentos e autoriza o reajuste dos planos individuais.</li><li>Seguradoras especializadas em saúde ficam sob a ANS, não sob a SUSEP (Lei 10.185/2001).</li></ul>
+<h3>Plano × seguro</h3><p><b>Plano</b>: atendimento pela rede credenciada. <b>Seguro saúde</b>: <b>livre escolha com reembolso</b> (pode ter rede referenciada também).</p>
+<p><b>Ressarcimento ao SUS</b>: quando um beneficiário de plano é atendido no SUS, a operadora devolve o custo. <b>A ANS estabelece as normas</b> desse ressarcimento.</p>
+<h3>Segmentações</h3><p>Ambulatorial · hospitalar sem obstetrícia · hospitalar com obstetrícia · odontológico · <b>plano-referência</b> (ambulatorial + hospitalar + obstetrícia, enfermaria; oferta obrigatória).</p>
+<h3>Carências máximas</h3>
+<table><tr><td>24 horas</td><td>Urgência e emergência</td></tr><tr><td>180 dias</td><td>Demais casos</td></tr><tr><td>300 dias</td><td>Parto a termo</td></tr><tr><td>24 meses</td><td>Doença ou lesão preexistente: CPT (cobertura parcial temporária)</td></tr></table>
+<h3>Outros pontos</h3>
+<ul><li><b>Contratação</b>: individual/familiar, coletivo empresarial, coletivo por adesão.</li>
+<li><b>Reajuste por idade</b>: 10 faixas, a última aos 59 anos. Proibido reajuste por idade a partir dos 60 (Estatuto do Idoso).</li>
+<li><b>Rescisão unilateral do individual</b>: só por fraude ou atraso de mais de 60 dias (seguidos ou não) nos últimos 12 meses, com notificação até o 50º dia.</li>
+<li>Não pode limitar o tempo de internação.</li>
+<li><b>Operadoras</b>: medicina de grupo, cooperativa médica, autogestão, seguradora especializada, filantropia, administradora de benefícios, odontologia de grupo, cooperativa odontológica.</li></ul>`,
+oper: `
+<h3>Sistema Nacional de Seguros Privados (DL 73/1966)</h3><p><b>CNSP</b> (normativo) · <b>SUSEP</b> (fiscaliza e executa) · resseguradores · seguradoras · EAPC · sociedades de capitalização · corretores.</p>
+<h3>Partes</h3><ul><li><b>Segurado</b>, <b>seguradora</b>, <b>beneficiário</b>, <b>estipulante</b> (grupo).</li><li><b>Corretor</b>: intermediário habilitado que angaria e promove os contratos entre seguradora e segurado, ganha comissão de corretagem.</li></ul>
+<h3>Ciclo</h3>
+<ul><li><b>Subscrição de riscos</b> = <b>análise do risco</b> e decisão de aceitar ou não, e em que condições (taxa, coberturas). Quem faz é o subscritor (underwriter).</li>
+<li><b>Proposta</b> → a seguradora tem <b>25 dias</b> para recusar; se ficar em silêncio, a proposta está aceita (Lei 15.040/2024, art. 49). Antes era 15 dias; material antigo pode trazer 15.</li>
+<li><b>Apólice</b> (contrato) · <b>bilhete</b> (dispensa proposta) · <b>certificado</b> (seguro em grupo) · <b>endosso</b> (alteração durante a vigência).</li>
+<li><b>Sinistro</b> = o evento coberto acontecer → aviso → regulação (apurar) → liquidação (pagar).</li>
+<li><b>Franquia</b>: parte do prejuízo (ou período) que fica com o segurado.</li></ul>
+<h3>Divisão do risco</h3>
+<table><tr><td>Cosseguro</td><td>Um risco dividido entre várias <b>seguradoras</b>, cada uma com sua cota, uma é a líder (horizontal).</td></tr>
+<tr><td>Resseguro</td><td>A seguradora repassa parte do risco a uma <b>resseguradora</b>: "seguro da seguradora" (vertical).</td></tr>
+<tr><td>Retrocessão</td><td>A <b>resseguradora</b> repassa parte do risco a outra resseguradora ou seguradora.</td></tr></table>
+<h3>Princípios</h3><p>Boa-fé (máxima): omitir ou mentir na proposta, ou agravar o risco de propósito, pode fazer perder a cobertura.</p>`,
+preco: `
+<h3>Prêmio</h3>
+<table><tr><td>Prêmio puro (de risco)</td><td>Cobre só o custo esperado dos sinistros = <b>frequência × custo médio</b></td></tr>
+<tr><td>Prêmio comercial</td><td>Puro + <b>carregamento</b> (despesas, corretagem, lucro)</td></tr>
+<tr><td>Prêmio total</td><td>Comercial + <b>IOF</b></td></tr>
+<tr><td>Taxa</td><td>Prêmio ÷ importância segurada</td></tr></table>
+<h3>O que entra no preço de vida/previdência</h3><ul><li><b>Tábuas biométricas</b>: mortalidade (cobertura de morte) e sobrevivência (renda).</li><li>Idade, sexo, profissão, hábitos (fumo), saúde, capital, coberturas.</li><li><b>Taxa de juros</b> atuarial (desconta valores futuros; é a garantia nos planos tradicionais).</li></ul>
+<h3>Problemas que a subscrição combate</h3><ul><li><b>Antisseleção (seleção adversa)</b>: quem tem risco maior procura mais o seguro → declaração de saúde, carência.</li><li><b>Risco moral</b>: mudança de comportamento depois de segurado.</li></ul>
+<h3>Indicadores e provisões</h3><ul><li><b>Sinistralidade</b> = sinistros ÷ prêmios ganhos.</li><li><b>PMBaC</b>: benefícios a conceder (fase de acumulação). <b>PMBC</b>: benefícios concedidos (em pagamento).</li><li><b>PSL</b>: sinistros a liquidar. <b>IBNR</b>: sinistros ocorridos e não avisados. <b>PPNG</b>: prêmios não ganhos.</li></ul>
+<h3>Regimes financeiros</h3><ul><li><b>Capitalização</b>: acumulação individual (previdência).</li><li><b>Repartição simples</b>: os prêmios do período pagam os sinistros do período (vida em grupo anual).</li><li><b>Repartição de capitais de cobertura</b>: o período forma o capital para as rendas que começam nele.</li></ul>`,
+numeros: `
+<table>
+<tr><td>50 questões / 2 h</td><td>≈ 2 min 24 s por questão</td></tr>
+<tr><td>2 anos</td><td>Suicídio voluntário sem capital no seguro de vida</td></tr>
+<tr><td>25 dias</td><td>Seguradora responder à proposta; silêncio = aceita (antes: 15)</td></tr>
+<tr><td>12%</td><td>Dedução máxima do PGBL (renda bruta tributável, declaração completa)</td></tr>
+<tr><td>35% → 10%</td><td>Tabela regressiva: até 2 anos 35%, cai 5 pontos a cada 2 anos, acima de 10 anos 10%</td></tr>
+<tr><td>15%</td><td>Retenção na fonte da tabela progressiva no resgate</td></tr>
+<tr><td>15 dias</td><td>Franquia comum da DIT</td></tr>
+<tr><td>24 h / 180 d / 300 d</td><td>Carências: urgência / demais / parto</td></tr>
+<tr><td>24 meses</td><td>CPT para doença preexistente</td></tr>
+<tr><td>59 / 60 anos</td><td>Última faixa de reajuste / proibido reajuste por idade</td></tr>
+<tr><td>60 dias</td><td>Atraso que permite rescindir plano individual (nos últimos 12 meses)</td></tr>
+<tr><td>DL 73/1966</td><td>Sistema Nacional de Seguros Privados</td></tr>
+<tr><td>LC 109/2001</td><td>Previdência complementar</td></tr>
+<tr><td>Lei 9.656/1998 · 9.961/2000</td><td>Planos de saúde · cria a ANS</td></tr>
+<tr><td>Lei 15.040/2024</td><td>Nova lei do contrato de seguro (vigente desde dez/2025)</td></tr>
+</table>
+<h3>Órgãos (decore em pares)</h3>
+<table><tr><td>CNSP → SUSEP</td><td>Seguros, previdência aberta, capitalização</td></tr><tr><td>CNPC → PREVIC</td><td>Previdência fechada (fundos de pensão)</td></tr><tr><td>ANS</td><td>Planos e seguros saúde</td></tr></table>`
+};
+
+const Q = [
+// ---- Gerenciamento de Riscos
+{id:'r1',m:'riscos',q:'Qual situação representa um risco PURO?',o:['Investir em ações na bolsa','Um incêndio atingir sua casa','Apostar na loteria','Abrir uma empresa nova'],c:1,j:'Risco puro só tem dois resultados: perder ou não perder. No incêndio, ou há perda ou não há. As outras opções podem dar ganho, então são especulativas.'},
+{id:'r2',m:'riscos',q:'O risco especulativo é aquele que:',o:['Só admite perda ou não perda','Admite perda, não perda ou ganho','É o tipo que o seguro cobre','Atinge apenas pessoas físicas'],c:1,j:'Especulativo = perder, não perder OU ganhar. Por permitir lucro, não é segurável.'},
+{id:'r3',m:'riscos',q:'Em regra, o seguro cobre:',o:['Riscos puros','Riscos especulativos','Riscos puros e especulativos igualmente','Nenhum dos dois'],c:0,j:'Só o risco puro é segurável. Seguro repõe perda, não pode virar fonte de ganho.'},
+{id:'r4',m:'riscos',q:'O risco que afeta o mercado como um todo e não é eliminado pela diversificação é o risco:',o:['Não sistemático','Sistemático (de mercado)','Específico','Diversificável'],c:1,j:'Sistemático = sistema todo (juros, inflação, crise). Não adianta diversificar porque tudo é atingido.'},
+{id:'r5',m:'riscos',q:'Uma fraude interna em uma única empresa é exemplo de risco:',o:['Sistemático','De mercado','Não sistemático (específico da instituição)','Conjuntural'],c:2,j:'Atinge só aquela instituição: é risco interno, não sistemático. Diversificação reduz.'},
+{id:'r6',m:'riscos',q:'A ordem correta do processo de gerenciamento de riscos é:',o:['Tratar → identificar → avaliar → monitorar','Identificar → avaliar → tratar → monitorar','Avaliar → identificar → monitorar → tratar','Monitorar → tratar → identificar → avaliar'],c:1,j:'Primeiro descobre o risco, depois mede (frequência × severidade), decide o tratamento e acompanha.'},
+{id:'r7',m:'riscos',q:'Um risco de BAIXA frequência e ALTA severidade (ex.: incêndio que destrói a fábrica) tem como tratamento típico:',o:['Reter','Transferir por meio de seguro','Ignorar','Aumentar a exposição'],c:1,j:'Raro mas devastador: é o caso clássico do seguro. Transferir.'},
+{id:'r8',m:'riscos',q:'Um risco de ALTA frequência e ALTA severidade deve, em regra, ser:',o:['Evitado','Retido','Transferido sempre','Aceito sem controle'],c:0,j:'Acontece muito e causa grande perda: o seguro seria caríssimo e reter é inviável. Melhor eliminar a atividade (evitar).'},
+{id:'r9',m:'riscos',q:'Riscos de BAIXA frequência e BAIXA severidade normalmente são:',o:['Evitados','Transferidos','Retidos (assumidos)','Motivo para encerrar a atividade'],c:2,j:'Pouco provável e pouco prejuízo: não compensa pagar seguro. Assume-se (retenção).'},
+{id:'r10',m:'riscos',q:'A franquia em uma apólice é um exemplo de:',o:['Retenção de parte do risco pelo segurado','Transferência total do risco','Eliminação do risco','Risco especulativo'],c:0,j:'Com a franquia, uma parte do prejuízo fica com o segurado: retenção parcial.'},
+{id:'r11',m:'riscos',q:'A lei dos grandes números diz que:',o:['Quanto maior o número de riscos semelhantes, mais previsível é a perda média','Quanto maior o capital, menor o prêmio','Quanto mais sinistros, maior o lucro','Riscos grandes não podem ser segurados'],c:0,j:'Com muitos riscos homogêneos, o resultado real se aproxima do esperado. É o que permite calcular o prêmio.'},
+{id:'r12',m:'riscos',q:'O mutualismo, base do seguro, significa que:',o:['As contribuições de muitos pagam as perdas de poucos','Cada segurado paga exatamente o próprio sinistro','O governo garante os sinistros','A seguradora paga tudo com capital próprio'],c:0,j:'Todos pagam prêmio para um fundo comum que indeniza os poucos que sofrem o sinistro.'},
+{id:'r13',m:'riscos',q:'Perdas causadas por falhas de pessoas, processos, sistemas ou eventos externos são risco:',o:['Operacional','De mercado','De crédito','De liquidez'],c:0,j:'Mercado = variação de preços/juros. Crédito = alguém não pagar. Liquidez = falta de caixa. Falhas internas = operacional.'},
+// ---- Previdência
+{id:'p1',m:'prev',q:'O órgão que NORMATIZA a previdência complementar ABERTA é:',o:['SUSEP','CNSP','PREVIC','CNPC'],c:1,j:'CNSP faz as normas, SUSEP fiscaliza. Na fechada: CNPC normatiza, PREVIC fiscaliza.'},
+{id:'p2',m:'prev',q:'Quem FISCALIZA as entidades fechadas (fundos de pensão)?',o:['SUSEP','CNSP','PREVIC','ANS'],c:2,j:'Fechada: CNPC → PREVIC → EFPC.'},
+{id:'p3',m:'prev',q:'Os planos de previdência ABERTA são operados por:',o:['EFPC','EAPC e seguradoras autorizadas','INSS','Banco Central'],c:1,j:'EAPC = entidade aberta. EFPC = fechada (fundo de pensão).'},
+{id:'p4',m:'prev',q:'Os planos de entidade FECHADA são acessíveis a:',o:['Qualquer pessoa','Empregados de patrocinador ou associados de instituidor','Somente servidores públicos','Somente aposentados do INSS'],c:1,j:'Fechada = grupo específico ligado a uma empresa (patrocinador) ou entidade de classe (instituidor).'},
+{id:'p5',m:'prev',q:'No PGBL, as contribuições:',o:['Podem ser deduzidas até 12% da renda bruta tributável, na declaração completa','Nunca são dedutíveis','São dedutíveis sem limite','São dedutíveis só na declaração simplificada'],c:0,j:'Vantagem do PGBL: deduz até 12%. Em troca, paga IR sobre o valor total no resgate.'},
+{id:'p6',m:'prev',q:'No VGBL, o imposto de renda no resgate incide sobre:',o:['O valor total','Apenas os rendimentos','Apenas as contribuições','Não há imposto'],c:1,j:'Como não deduziu nada na entrada, no VGBL o IR é só sobre o que rendeu.'},
+{id:'p7',m:'prev',q:'Para quem faz a declaração SIMPLIFICADA, normalmente é mais indicado:',o:['PGBL','VGBL','Tanto faz','Nenhum dos dois'],c:1,j:'Na simplificada não há como aproveitar a dedução do PGBL, e ainda pagaria IR sobre tudo. VGBL é melhor.'},
+{id:'p8',m:'prev',q:'Na tabela REGRESSIVA, recursos acumulados há mais de 10 anos pagam:',o:['35%','22,5%','15%','10%'],c:3,j:'35% (até 2 anos), cai 5 pontos a cada 2 anos, chega a 10% acima de 10 anos.'},
+{id:'p9',m:'prev',q:'Na tabela REGRESSIVA, recursos com até 2 anos pagam:',o:['35%','27,5%','15%','10%'],c:0,j:'Começa em 35% e desce até 10%. (27,5% é a maior alíquota da tabela progressiva mensal do IR, não da regressiva.)'},
+{id:'p10',m:'prev',q:'Portabilidade na previdência complementar é:',o:['Transferir o saldo para outro plano sem pagar IR, entre planos de mesma natureza','Sacar os recursos pagando IR','Trocar livremente PGBL por VGBL','Mudar o beneficiário'],c:0,j:'PGBL → PGBL e VGBL → VGBL, sem IR, pois o dinheiro não passa pela mão do participante.'},
+{id:'p11',m:'prev',q:'O plano do tipo VRI / PRI caracteriza-se por:',o:['Pagamento único com renda imediata','Garantia de juros + índice','Nenhuma garantia de rentabilidade','Rentabilidade atrelada a índice'],c:0,j:'R I = Renda Imediata: a pessoa paga uma vez e já começa a receber.'},
+{id:'p12',m:'prev',q:'O plano VRGP / PRGP garante:',o:['Taxa de juros + índice de atualização, com reversão de resultados financeiros','Nada: a rentabilidade é toda do fundo','Pagamento único com renda imediata','Somente a atualização por índice'],c:0,j:'RGP = Remuneração Garantida e Performance: juros + índice garantidos, e parte do excedente volta ao participante.'},
+{id:'p13',m:'prev',q:'O plano VDR / PDR (desempenho referenciado):',o:['Tem garantia mínima de desempenho atrelada a % de um índice de renda fixa','É de renda imediata','Não tem rentabilidade','Garante juros sem atualização'],c:0,j:'Desempenho referenciado = acompanha um índice de renda fixa, com mínimo garantido.'},
+{id:'p14',m:'prev',q:'O plano VRSA / PRSA garante:',o:['Juros, sem atualização monetária','Atualização + juros','Renda imediata','Nenhuma garantia'],c:0,j:'SA = Sem Atualização. Garante a taxa de juros, mas não corrige por índice de preços.'},
+{id:'p15',m:'prev',q:'O período em que o participante acumula recursos, antes de receber o benefício, chama-se:',o:['Período de diferimento','Carência','Vigência','Período de pagamento'],c:0,j:'Diferimento = acumulação. Depois vem a concessão e o pagamento do benefício.'},
+{id:'p16',m:'prev',q:'Na renda vitalícia com prazo mínimo garantido, se o participante falecer antes do prazo:',o:['Os beneficiários recebem a renda até completar o prazo mínimo','A renda acaba na hora','A reserva fica com a entidade','A renda dobra'],c:0,j:'O prazo mínimo é justamente a garantia para os beneficiários. Depois do prazo, se o participante estiver vivo, segue vitalícia.'},
+// ---- Seguro de Pessoas
+{id:'v1',m:'pessoas',q:'Sobre suicídio no seguro de vida, é correto afirmar:',o:['O beneficiário não recebe o capital se o suicídio voluntário ocorrer nos 2 primeiros anos de vigência','O suicídio nunca é coberto','O suicídio é coberto desde o primeiro dia','A carência para suicídio é de 1 ano'],c:0,j:'Regra dos 2 anos (antigo art. 798 do Código Civil, mantida na Lei 15.040/2024). Depois dos 2 anos, é coberto.'},
+{id:'v2',m:'pessoas',q:'O seguro prestamista:',o:['Quita o saldo devedor junto ao credor em caso de morte ou invalidez do devedor','Protege o cliente contra a falência do banco','É um seguro de automóvel','É um plano de previdência'],c:0,j:'"Quem paga em caso de dívida". O credor é o primeiro beneficiário, até o valor do saldo devedor.'},
+{id:'v3',m:'pessoas',q:'Na cobertura de DIT, o período inicial em que o segurado não recebe diárias chama-se:',o:['Carência','Franquia','Diferimento','Vigência'],c:1,j:'Franquia na DIT costuma ser 15 dias. Carência é outra coisa: prazo após a contratação sem cobertura.'},
+{id:'v4',m:'pessoas',q:'A cobertura de DMHO garante:',o:['Reembolso de despesas médicas, hospitalares e odontológicas decorrentes de acidente','Diárias por doença','Capital por morte natural','Plano de saúde regulado pela ANS'],c:0,j:'DMHO é cobertura de acidentes pessoais, por reembolso. Não é plano de saúde.'},
+{id:'v5',m:'pessoas',q:'No seguro de vida em grupo, o estipulante é:',o:['A pessoa física ou jurídica que contrata o seguro para o grupo e representa os segurados','O corretor de seguros','O beneficiário','O ressegurador'],c:0,j:'Ex.: a empresa que contrata vida em grupo para os funcionários. Não é corretor.'},
+{id:'v6',m:'pessoas',q:'Se não houver beneficiário indicado, o capital do seguro de vida vai:',o:['Metade ao cônjuge não separado judicialmente e metade aos herdeiros','Todo para a seguradora','Todo para o Estado','Todo para o estipulante'],c:0,j:'Regra clássica: metade cônjuge, metade herdeiros na ordem da sucessão.'},
+{id:'v7',m:'pessoas',q:'O capital segurado pago por morte:',o:['Não é herança e não responde pelas dívidas do segurado','Entra no inventário','Pode ser penhorado pelos credores do segurado','É dividido com a seguradora'],c:0,j:'O capital vai direto ao beneficiário, fora da herança.'},
+{id:'v8',m:'pessoas',q:'NÃO é característica do acidente pessoal:',o:['Súbito','Externo','Involuntário','Causado por doença'],c:3,j:'Acidente = súbito, externo, involuntário, violento, com data caracterizada. Doença não é acidente.'},
+{id:'v9',m:'pessoas',q:'A carência no seguro de vida:',o:['Não se aplica a eventos decorrentes de acidente pessoal','Vale para todos os eventos','Tem mínimo de 5 anos','Só existe para acidentes'],c:0,j:'Pode haver carência para morte natural, mas acidente é coberto desde o início.'},
+{id:'v10',m:'pessoas',q:'Uma pessoa pode ter mais de um seguro de vida?',o:['Sim, em várias seguradoras e sem limite, pois vida não segue o princípio indenitário','Não, é proibido','Só um por CPF','Sim, mas o capital é dividido entre as apólices'],c:0,j:'Vida não tem valor de mercado para "repor". Cada seguro paga seu capital.'},
+{id:'v11',m:'pessoas',q:'A cobertura de IPA paga:',o:['Um percentual do capital conforme o grau da invalidez permanente causada por acidente','Diárias','Reembolso de despesas','Renda vitalícia'],c:0,j:'Invalidez Permanente por Acidente, total ou parcial, com tabela de percentuais.'},
+{id:'v12',m:'pessoas',q:'No seguro em grupo CONTRIBUTÁRIO:',o:['Os segurados pagam parte ou todo o prêmio','O estipulante paga 100%','Não há prêmio','O governo paga'],c:0,j:'Contributário = segurado contribui. Não contributário = estipulante paga tudo.'},
+// ---- Saúde
+{id:'s1',m:'saude',q:'Quem regula planos e seguros privados de saúde?',o:['SUSEP','ANS','CNSP','PREVIC'],c:1,j:'ANS (Lei 9.961/2000). Até as seguradoras especializadas em saúde ficam sob a ANS.'},
+{id:'s2',m:'saude',q:'O que diferencia o seguro saúde do plano de saúde?',o:['Livre escolha de prestadores com reembolso','Atendimento só em rede própria','Não ter cobertura hospitalar','Ser regulado pela SUSEP'],c:0,j:'Seguro ≠ plano: o seguro tem reembolso (livre escolha).'},
+{id:'s3',m:'saude',q:'O ressarcimento ao SUS ocorre quando:',o:['O beneficiário de plano é atendido no SUS e a operadora devolve o custo, conforme normas da ANS','O SUS paga a operadora','O beneficiário reembolsa o SUS','Não existe ressarcimento'],c:0,j:'A ANS estabelece as normas do ressarcimento ao SUS (art. 32 da Lei 9.656/98).'},
+{id:'s4',m:'saude',q:'A carência máxima para parto a termo é de:',o:['24 horas','180 dias','300 dias','24 meses'],c:2,j:'24 h urgência/emergência, 300 dias parto, 180 dias o resto, 24 meses CPT.'},
+{id:'s5',m:'saude',q:'A carência máxima para urgência e emergência é de:',o:['24 horas','30 dias','180 dias','300 dias'],c:0,j:'24 horas.'},
+{id:'s6',m:'saude',q:'Para doenças e lesões preexistentes, a operadora pode aplicar:',o:['Cobertura parcial temporária de até 24 meses','Carência de 300 dias','Exclusão permanente','Carência de 10 anos'],c:0,j:'CPT: até 24 meses sem cobertura de procedimentos de alta complexidade ligados à doença preexistente.'},
+{id:'s7',m:'saude',q:'O plano-referência inclui:',o:['Ambulatorial + hospitalar com obstetrícia, em enfermaria','Só ambulatorial','Só odontológico','Hospitalar em apartamento obrigatório'],c:0,j:'É o plano mais completo e de oferta obrigatória, com acomodação em enfermaria.'},
+{id:'s8',m:'saude',q:'Sobre reajuste por faixa etária:',o:['A última faixa é aos 59 anos; a partir dos 60 não há reajuste por idade','É livre em qualquer idade','Só pode depois dos 70','Não existe reajuste por idade'],c:0,j:'10 faixas, última aos 59. Estatuto do Idoso proíbe reajuste por idade aos 60+.'},
+{id:'s9',m:'saude',q:'A operadora só pode rescindir unilateralmente um plano INDIVIDUAL em caso de:',o:['Fraude ou atraso de mais de 60 dias nos últimos 12 meses, com notificação','A qualquer momento','Após 2 anos de contrato','Quando o beneficiário fizer 60 anos'],c:0,j:'Fraude ou inadimplência > 60 dias (seguidos ou não) em 12 meses, notificando até o 50º dia.'},
+{id:'s10',m:'saude',q:'A lei que trata dos planos e seguros privados de saúde é a:',o:['Lei 9.656/1998','Lei 8.080/1990','Lei 9.961/2000','LC 109/2001'],c:0,j:'9.961/2000 cria a ANS. 8.080/1990 é a lei do SUS. LC 109/2001 é previdência complementar.'},
+{id:'s11',m:'saude',q:'As formas de contratação de plano de saúde são:',o:['Individual/familiar, coletivo empresarial e coletivo por adesão','Aberta e fechada','PGBL e VGBL','Puro e especulativo'],c:0,j:'As outras alternativas são de outras matérias (previdência e riscos).'},
+// ---- Operações
+{id:'o1',m:'oper',q:'Subscrição de riscos é:',o:['A análise do risco e a decisão de aceitá-lo ou não, e em que condições','O pagamento do sinistro','A venda feita pelo corretor','O repasse ao ressegurador'],c:0,j:'Subscrição = análise do risco. Define se aceita, a taxa e as condições.'},
+{id:'o2',m:'oper',q:'Pela Lei 15.040/2024, a seguradora tem quanto tempo para recusar a proposta, sob pena de aceitação tácita?',o:['15 dias','25 dias','30 dias','60 dias'],c:1,j:'25 dias; o silêncio vale como aceitação. Antes da lei era 15 dias. Se o enunciado citar a regra antiga, a resposta é 15.'},
+{id:'o3',m:'oper',q:'Cosseguro é:',o:['A divisão de um mesmo risco entre duas ou mais seguradoras, cada uma com sua cota','O seguro da seguradora','O repasse feito pela resseguradora','O seguro em grupo'],c:0,j:'Cosseguro = horizontal, entre seguradoras, com uma líder.'},
+{id:'o4',m:'oper',q:'Resseguro é:',o:['A seguradora transferir parte do risco a uma resseguradora','Dividir o risco entre seguradoras','O segurado contratar dois seguros','O corretor assumir o risco'],c:0,j:'"Seguro da seguradora".'},
+{id:'o5',m:'oper',q:'Retrocessão é:',o:['A resseguradora repassar parte do risco a outra resseguradora ou seguradora','A devolução do prêmio','O cancelamento da apólice','A renovação do seguro'],c:0,j:'Seguradora → resseguradora (resseguro) → outra (retrocessão).'},
+{id:'o6',m:'oper',q:'O documento que altera a apólice durante a vigência é o:',o:['Endosso','Aviso de sinistro','Bilhete','Certificado'],c:0,j:'Bilhete dispensa proposta; certificado é do seguro em grupo; endosso altera.'},
+{id:'o7',m:'oper',q:'O corretor de seguros é:',o:['O intermediário habilitado que angaria e promove contratos entre seguradora e segurado, remunerado por corretagem','Empregado da seguradora','Fiscal da SUSEP','O estipulante do grupo'],c:0,j:'O corretor é independente e ganha comissão de corretagem.'},
+{id:'o8',m:'oper',q:'O Sistema Nacional de Seguros Privados foi criado pelo:',o:['Decreto-Lei 73/1966','Lei 9.656/1998','LC 109/2001','Lei 9.961/2000'],c:0,j:'DL 73/66: CNSP, SUSEP, seguradoras, resseguradores, corretores.'},
+{id:'o9',m:'oper',q:'Sinistro é:',o:['A ocorrência do evento coberto pelo seguro','O pagamento do prêmio','A proposta de seguro','A alteração da apólice'],c:0,j:'Sinistro = o risco virou realidade.'},
+// ---- Precificação
+{id:'c1',m:'preco',q:'O prêmio puro (ou de risco) é:',o:['O valor que cobre apenas o custo esperado dos sinistros','O prêmio já com IOF','A comissão do corretor','O lucro da seguradora'],c:0,j:'Prêmio puro = frequência × custo médio. Sem despesas, sem lucro, sem imposto.'},
+{id:'c2',m:'preco',q:'O prêmio comercial é formado por:',o:['Prêmio puro + carregamento','Prêmio puro − IOF','Somente o IOF','Somente os sinistros'],c:0,j:'Carregamento = despesas administrativas, corretagem e lucro.'},
+{id:'c3',m:'preco',q:'O prêmio total pago pelo segurado é:',o:['Prêmio comercial + IOF','Prêmio puro','Somente o carregamento','O valor do sinistro'],c:0,j:'Puro → + carregamento = comercial → + IOF = total.'},
+{id:'c4',m:'preco',q:'Antisseleção (seleção adversa) é:',o:['A tendência de quem tem risco maior procurar mais o seguro','A seleção de riscos feita pela seguradora','A escolha do corretor','O resseguro'],c:0,j:'Por isso existem declaração de saúde, análise de risco e carência.'},
+{id:'c5',m:'preco',q:'A base para precificar coberturas de morte e de sobrevivência são:',o:['As tábuas biométricas (mortalidade e sobrevivência)','A tabela do IR','O índice Bovespa','O rol da ANS'],c:0,j:'Tábua de mortalidade para morte, de sobrevivência para renda.'},
+{id:'c6',m:'preco',q:'A provisão IBNR refere-se a:',o:['Sinistros ocorridos e ainda não avisados','Prêmios não ganhos','Benefícios concedidos','Despesas administrativas'],c:0,j:'Incurred But Not Reported. PPNG = prêmios não ganhos; PMBC = benefícios concedidos.'},
+{id:'c7',m:'preco',q:'O regime financeiro típico da previdência (acumulação individual) é:',o:['Capitalização','Repartição simples','Repartição de capitais de cobertura','Nenhum'],c:0,j:'Cada um acumula a própria reserva. Repartição simples é típica da vida em grupo anual.'},
+{id:'c8',m:'preco',q:'O índice de sinistralidade é calculado por:',o:['Sinistros ÷ prêmios ganhos','Prêmios ÷ sinistros','Comissões ÷ prêmios','Lucro ÷ capital'],c:0,j:'Mostra quanto dos prêmios foi consumido por sinistros.'},
+{id:'c9',m:'preco',q:'A taxa do seguro é obtida por:',o:['Prêmio ÷ importância segurada','Importância segurada ÷ prêmio','Sinistro ÷ prêmio','Prêmio × IOF'],c:0,j:'Ex.: prêmio de R$ 500 para IS de R$ 100.000 = taxa de 0,5%.'}
+];
+
+const FC = [
+['Risco puro','Perder ou não perder. Segurável.','riscos'],['Risco especulativo','Perder, não perder ou ganhar. Não segurável.','riscos'],
+['Risco sistemático','De mercado, atinge o sistema todo. Diversificação não elimina.','riscos'],['Risco não sistemático','Da instituição/particular (interno). Diversificação reduz.','riscos'],
+['Baixa freq. + alta sev.','Transferir (seguro)','riscos'],['Alta freq. + alta sev.','Evitar','riscos'],['Baixa freq. + baixa sev.','Reter','riscos'],['Alta freq. + baixa sev.','Reduzir / prevenir','riscos'],
+['Processo de gestão de riscos','Identificar → avaliar → tratar → monitorar','riscos'],['Mutualismo','Muitos pagam as perdas de poucos','riscos'],['Risco operacional','Falhas de pessoas, processos, sistemas, eventos externos','riscos'],
+['Previdência aberta','CNSP (normativo) → SUSEP (fiscaliza) → EAPC/seguradoras','prev'],['Previdência fechada','CNPC → PREVIC → EFPC (fundo de pensão)','prev'],
+['PGBL','Deduz até 12% (declaração completa). IR sobre o total.','prev'],['VGBL','Não deduz. IR só sobre os rendimentos.','prev'],
+['Tabela regressiva','35% (≤2 anos) … 10% (>10 anos)','prev'],['Portabilidade','Mudar de plano sem IR, mesma natureza (PGBL↔PGBL)','prev'],
+['VRGP','Juros + índice garantidos, com performance','prev'],['VAGP','Atualização por índice garantida, com performance','prev'],['VRSA','Juros garantidos, sem atualização','prev'],['VDR','Desempenho referenciado: mínimo atrelado a índice de renda fixa','prev'],['VRI','Pagamento único, renda imediata','prev'],['Período de diferimento','Fase de acumulação','prev'],
+['Suicídio','Sem capital nos 2 primeiros anos (voluntário)','pessoas'],['Prestamista','Quita a dívida; credor é o 1º beneficiário','pessoas'],['DIT','Diárias por incapacidade temporária; franquia comum 15 dias','pessoas'],['DMHO','Reembolso de despesas médicas/hospitalares/odonto por acidente','pessoas'],['IPA','Invalidez permanente por acidente, % por tabela','pessoas'],['Estipulante','Contrata o seguro em grupo e representa os segurados','pessoas'],['Sem beneficiário indicado','Metade cônjuge, metade herdeiros','pessoas'],['Acidente pessoal','Súbito, externo, involuntário, violento','pessoas'],
+['ANS','Regula planos e seguros saúde; normas do ressarcimento ao SUS','saude'],['Seguro saúde × plano','Seguro tem livre escolha com reembolso','saude'],['Carências','24 h urgência · 180 d demais · 300 d parto · 24 m CPT','saude'],['Reajuste por idade','Última faixa 59 anos; proibido aos 60+','saude'],['Lei 9.656/98','Planos de saúde','saude'],['Lei 9.961/2000','Cria a ANS','saude'],
+['Subscrição','Análise do risco e decisão de aceitar','oper'],['Prazo da proposta','25 dias, silêncio = aceita (Lei 15.040/2024)','oper'],['Cosseguro','Risco dividido entre seguradoras','oper'],['Resseguro','Seguro da seguradora','oper'],['Retrocessão','Resseguradora repassa a outra','oper'],['Endosso','Altera a apólice','oper'],['DL 73/1966','Cria o Sistema Nacional de Seguros Privados','oper'],
+['Prêmio puro','Custo esperado dos sinistros','preco'],['Prêmio comercial','Puro + carregamento','preco'],['Prêmio total','Comercial + IOF','preco'],['Antisseleção','Quem tem mais risco procura mais o seguro','preco'],['IBNR','Sinistros ocorridos e não avisados','preco'],['Capitalização','Regime da previdência (reserva individual)','preco']
+];
+
+// ======================= ESTADO =======================
+const KEY = 'susep-vp-2026';
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)); } catch (e) { S = null; }
+S = Object.assign({days:{}, q:{}, fc:{}, sims:[], notes:{}, custom:[]}, S || {});
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+const pad = n => String(n).padStart(2,'0');
+const todayISO = () => { const t = new Date(); return t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate()); };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const allQ = () => Q.concat(S.custom);
+const qById = id => allQ().find(x => x.id === id);
+const fmtDia = iso => { const [y,m,d] = iso.split('-').map(Number); const dt = new Date(y,m-1,d); return ['dom','seg','ter','qua','qui','sex','sáb'][dt.getDay()]+' '+pad(d)+'/'+pad(m); };
+
+function diasFalta(){ const t = new Date(); t.setHours(0,0,0,0); return Math.round((PROVA - t)/86400000); }
+function record(id, ok){ const r = S.q[id] || {n:0, ok:0}; r.n++; if (ok) r.ok++; r.last = ok; S.q[id] = r; }
+function statMat(m){ let n=0, ok=0, feitas=0, tot=0; allQ().filter(q=>q.m===m).forEach(q=>{ tot++; const r=S.q[q.id]; if(r){ feitas++; n+=r.n; ok+=r.ok; } }); return {n, ok, feitas, tot, pct: n ? Math.round(ok/n*100) : null}; }
+
+// ======================= NAVEGAÇÃO =======================
+const TABS = [['hoje','Hoje'],['plano','Cronograma'],['res','Resumos'],['quest','Questões'],['fc','Flashcards'],['err','Erros'],['desemp','Desempenho']];
+let TAB = 'hoje', SUB = null, QZ = null, FCS = null, TIMER = null;
+function go(tab, sub){ TAB = tab; SUB = sub === undefined ? null : sub; render(); window.scrollTo(0,0); }
+function render(){
+  const f = diasFalta();
+  document.getElementById('count').textContent = f > 0 ? `faltam ${f} dias · prova 05/12` : f === 0 ? 'HOJE É A PROVA' : 'prova realizada';
+  document.getElementById('nav').innerHTML = TABS.map(([k,l]) => `<button class="${k===TAB?'on':''}" onclick="go('${k}')">${l}</button>`).join('');
+  const M = document.getElementById('main');
+  if (TAB !== 'quest' && TIMER) { clearInterval(TIMER); TIMER = null; }
+  M.innerHTML = ({hoje:vHoje, plano:vPlano, res:vRes, quest:vQuest, fc:vFc, err:vErr, desemp:vDesemp})[TAB]();
+  if (TAB === 'quest' && QZ && QZ.mode === 'sim') startTimer();
+}
+
+function acaoBtn(a){
+  const [k, v] = a;
+  if (k === 'q') return `<button class="btn" onclick="treinoMat('${v}')">Treinar ${MAT[v].n}</button>`;
+  if (k === 'fc') return `<button class="btn g" onclick="startFc('${v}')">Flashcards${v ? ' · '+MAT[v].n : ' · todos'}</button>`;
+  if (k === 'mix') return `<button class="btn" onclick="misto(${v})">Misto de ${v} questões</button>`;
+  if (k === 'sim') return `<button class="btn" onclick="simulado()">Simulado completo (2 h)</button>`;
+  if (k === 'err') return `<button class="btn g" onclick="go('err')">Caderno de erros</button>`;
+  if (k === 'res') return `<button class="btn g" onclick="go('res','${v}')">Resumo: ${v==='numeros'?'Números que caem':MAT[v].n}</button>`;
+  return '';
+}
+
+// ======================= VIEWS =======================
+function vHoje(){
+  const hoje = todayISO();
+  let p = PLANO.find(x => x.d === hoje);
+  let aviso = '';
+  if (!p) { p = PLANO.find(x => x.d > hoje && !S.days[x.d]) || PLANO[PLANO.length-1]; aviso = `<p class="mut small">Sem item marcado para hoje; mostrando o próximo pendente (${fmtDia(p.d)}).</p>`; }
+  const atrasados = PLANO.filter(x => x.d < hoje && !S.days[x.d]);
+  const feitos = PLANO.filter(x => S.days[x.d]).length;
+  let proj = 0, base = 0;
+  Object.keys(MAT).forEach(m => { const s = statMat(m); if (s.pct !== null) { proj += s.pct/100*MAT[m].p; base += MAT[m].p; } });
+  const projTxt = base ? Math.round(proj/base*100)+'%' : '—';
+  return `
+  <div class="kpi" style="margin-bottom:14px">
+    <div><span class="mut small">Dias até a prova</span><b>${Math.max(diasFalta(),0)}</b></div>
+    <div><span class="mut small">Dias do plano concluídos</span><b>${feitos}/${PLANO.length}</b></div>
+    <div><span class="mut small">Acerto médio (pesado pela prova)</span><b>${projTxt}</b></div>
+    <div><span class="mut small">Questões para revisar</span><b>${errIds().length}</b></div>
+  </div>
+  <div class="card">
+    <h2>${fmtDia(p.d)} · ${p.t}</h2>${aviso}
+    <ul>${p.i.map(x=>`<li>${x}</li>`).join('')}</ul>
+    <div>${p.a.map(acaoBtn).join('')}</div>
+    <label style="display:flex;gap:8px;align-items:center;margin-top:10px;color:var(--ink)"><input type="checkbox" ${S.days[p.d]?'checked':''} onchange="marcaDia('${p.d}',this.checked)"> Concluí este dia</label>
+  </div>
+  ${atrasados.length ? `<div class="card"><h2 class="warn">Atrasados (${atrasados.length})</h2><ul>${atrasados.map(x=>`<li>${fmtDia(x.d)} · ${x.t}</li>`).join('')}</ul><p class="small mut">Não tente recuperar tudo: junte com o dia seguinte e priorize as matérias de 10 questões.</p></div>` : ''}
+  <div class="card"><h2>Como estudar cada dia (≈ 2 h)</h2>
+  <ol><li><b>30 min</b>: apostila + resumo da matéria do dia.</li><li><b>45 min</b>: questões. Antes de ver a resposta, decida e diga para você mesmo <i>por quê</i>.</li><li><b>20 min</b>: cada erro vai para a aba Erros com a sua justificativa escrita.</li><li><b>15 min</b>: flashcards.</li></ol>
+  <p class="small mut">Distribuição da prova (50 questões, 2 h): Riscos 10 · Pessoas 10 · Previdência 10 · Saúde 10 · Operações 5 · Precificação 5.</p></div>`;
+}
+function marcaDia(d, v){ S.days[d] = v; save(); render(); }
+
+function vPlano(){
+  const hoje = todayISO();
+  return `<div class="card"><h2>Cronograma até 05/12</h2>${PLANO.map(p => `
+    <div class="day ${p.d===hoje?'today':''} ${S.days[p.d]?'done':''}">
+      <input type="checkbox" ${S.days[p.d]?'checked':''} onchange="marcaDia('${p.d}',this.checked)">
+      <div><div class="dt"><span class="dl">${fmtDia(p.d)}</span> <b>${p.t}</b></div>
+      <ul class="small">${p.i.map(x=>`<li>${x}</li>`).join('')}</ul>${p.a.map(acaoBtn).join('')}</div>
+    </div>`).join('')}</div>`;
+}
+
+function vRes(){
+  const keys = Object.keys(MAT).concat(['numeros']);
+  const cur = SUB && RES[SUB] ? SUB : 'riscos';
+  return `<div class="card"><div class="row">${keys.map(k=>`<button class="btn ${k===cur?'':'g'}" onclick="go('res','${k}')">${k==='numeros'?'Números que caem':MAT[k].n}</button>`).join('')}</div></div>
+  <div class="card res"><h2>${cur==='numeros'?'Números e órgãos que caem':MAT[cur].n+(MAT[cur]?` <span class="tag">${MAT[cur].p} questões</span>`:'')}</h2>${RES[cur]}
+  ${cur!=='numeros'?`<div style="margin-top:14px">${acaoBtn(['q',cur])}${acaoBtn(['fc',cur])}</div>`:''}</div>`;
+}
+
+// ---------- Questões
+function treinoMat(m){ startQuiz(shuffle(allQ().filter(q=>q.m===m).map(q=>q.id)), 'treino', 'Treino · '+MAT[m].n); }
+function misto(n){ startQuiz(shuffle(allQ().map(q=>q.id)).slice(0,n), 'treino', `Misto de ${n}`); }
+function simulado(){
+  let ids = [];
+  Object.keys(MAT).forEach(m => { ids = ids.concat(shuffle(allQ().filter(q=>q.m===m).map(q=>q.id)).slice(0, MAT[m].p)); });
+  startQuiz(shuffle(ids), 'sim', 'Simulado completo');
+}
+function treinoErros(){ const ids = errIds(); if (!ids.length) { alertBox('Nenhuma questão errada para revisar.'); return; } startQuiz(shuffle(ids), 'treino', 'Só as erradas'); }
+function startQuiz(ids, mode, title){
+  QZ = {ids, i:0, mode, title, ans:{}, shown:{}, perm:{}, start:Date.now(), dur: mode==='sim' ? Math.round(ids.length*144) : 0, fim:false};
+  ids.forEach(id => QZ.perm[id] = shuffle(qById(id).o.map((_,k)=>k)));
+  go('quest');
+}
+let ALERT = '';
+function alertBox(t){ ALERT = t; go('quest'); }
+
+function vQuest(){
+  if (!QZ) {
+    const msg = ALERT ? `<div class="card warn">${esc(ALERT)}</div>` : ''; ALERT = '';
+    return `${msg}<div class="card"><h2>Escolha um treino</h2>
+      <h3>Por matéria (resposta comentada na hora)</h3><div>${Object.keys(MAT).map(m=>`<button class="btn g" onclick="treinoMat('${m}')">${MAT[m].n} (${allQ().filter(q=>q.m===m).length})</button>`).join('')}</div>
+      <h3>Misto</h3><button class="btn" onclick="misto(10)">10 questões</button><button class="btn" onclick="misto(20)">20 questões</button><button class="btn" onclick="misto(30)">30 questões</button>
+      <h3>Prova</h3><button class="btn" onclick="simulado()">Simulado completo cronometrado</button><span class="small mut"> pesos da prova, ${Math.round(simSize()*144/60)} min, correção só no fim</span>
+      <h3>Revisão</h3><button class="btn bad" onclick="treinoErros()">Só as que errei (${errIds().length})</button>
+      <p class="small mut">Banco: ${allQ().length} questões (${S.custom.length} suas). Questões que você copiar da apostila e dos simulados entram nos treinos e no simulado.</p></div>
+      ${vAddQ()}`;
+  }
+  if (QZ.fim) return vResultado();
+  const id = QZ.ids[QZ.i], q = qById(id), perm = QZ.perm[id], sel = QZ.ans[id];
+  const shown = QZ.mode === 'treino' && QZ.shown[id];
+  const L = 'ABCDE';
+  const opts = perm.map((k, pos) => {
+    let cls = 'opt';
+    if (shown) { if (k === q.c) cls += ' right'; else if (k === sel) cls += ' wrong'; }
+    else if (k === sel) cls += ' sel';
+    return `<button class="${cls}" ${shown?'disabled':''} onclick="responde(${k})"><b>${L[pos]})</b> ${esc(q.o[k])}</button>`;
+  }).join('');
+  const grid = QZ.mode === 'sim' ? `<div class="grid">${QZ.ids.map((x,n)=>`<button class="${QZ.ans[x]!==undefined?'a':''} ${n===QZ.i?'cur':''}" onclick="QZ.i=${n};render()">${n+1}</button>`).join('')}</div>` : '';
+  const just = shown ? `<div class="just"><b>${sel===q.c?'<span class="okc">Certo!</span>':'<span class="badc">Errado.</span>'}</b> Resposta: <b>${esc(q.o[q.c])}</b><br>${esc(q.j||'')}</div>` : '';
+  const ultima = QZ.i === QZ.ids.length - 1;
+  return `<div class="card">
+    <div class="row"><b>${esc(QZ.title)}</b><span class="tag">${MAT[q.m].n}</span><span class="mut small">questão ${QZ.i+1} de ${QZ.ids.length}</span>${QZ.mode==='sim'?'<span id="timer" style="margin-left:auto;font-weight:700"></span>':''}</div>
+    ${grid}
+    <p style="font-size:17px;margin:14px 0 6px">${esc(q.q)}</p>${opts}${just}
+    <div style="margin-top:12px">
+      ${QZ.i>0?'<button class="btn g" onclick="QZ.i--;render()">← Anterior</button>':''}
+      ${QZ.mode==='treino' && !shown ? '<span class="small mut">Pense no porquê antes de clicar.</span>' : ''}
+      ${(QZ.mode==='sim' || shown) && !ultima ? '<button class="btn" onclick="QZ.i++;render()">Próxima →</button>' : ''}
+      ${ultima && (QZ.mode==='sim' || shown) ? `<button class="btn ok" onclick="finaliza()">${QZ.mode==='sim'?'Entregar simulado':'Ver resultado'}</button>` : ''}
+      <button class="btn g" onclick="sair()">Sair</button>
+    </div></div>`;
+}
+function simSize(){ return Object.keys(MAT).reduce((s,m)=>s+Math.min(MAT[m].p, allQ().filter(q=>q.m===m).length),0); }
+function responde(k){
+  const id = QZ.ids[QZ.i];
+  if (QZ.mode === 'treino') { if (QZ.shown[id]) return; QZ.ans[id] = k; QZ.shown[id] = true; record(id, k === qById(id).c); save(); }
+  else QZ.ans[id] = k;
+  render();
+}
+function finaliza(){
+  if (QZ.mode === 'sim') {
+    QZ.ids.forEach(id => record(id, QZ.ans[id] === qById(id).c));
+    const by = {}; QZ.ids.forEach(id => { const m = qById(id).m; by[m] = by[m] || [0,0]; by[m][1]++; if (QZ.ans[id] === qById(id).c) by[m][0]++; });
+    const ok = QZ.ids.filter(id => QZ.ans[id] === qById(id).c).length;
+    S.sims.push({d: todayISO(), t: QZ.title, ok, tot: QZ.ids.length, min: Math.round((Date.now()-QZ.start)/60000), by});
+    save();
+  }
+  QZ.fim = true; if (TIMER) { clearInterval(TIMER); TIMER = null; } render();
+}
+function sair(){ if (TIMER) { clearInterval(TIMER); TIMER = null; } QZ = null; render(); }
+function startTimer(){
+  if (TIMER) clearInterval(TIMER);
+  const tick = () => {
+    const el = document.getElementById('timer'); if (!QZ || QZ.fim) { clearInterval(TIMER); TIMER = null; return; }
+    const rest = QZ.dur - Math.floor((Date.now()-QZ.start)/1000);
+    if (rest <= 0) { finaliza(); return; }
+    if (el) { el.textContent = `⏱ ${Math.floor(rest/3600)}:${pad(Math.floor(rest%3600/60))}:${pad(rest%60)}`; el.className = rest < 600 ? 'badc' : ''; }
+  };
+  tick(); TIMER = setInterval(tick, 1000);
+}
+function vResultado(){
+  const ok = QZ.ids.filter(id => QZ.ans[id] === qById(id).c).length, tot = QZ.ids.length, pct = Math.round(ok/tot*100);
+  const erradas = QZ.ids.filter(id => QZ.ans[id] !== qById(id).c);
+  return `<div class="card"><h2>${esc(QZ.title)}: ${ok}/${tot} (${pct}%)</h2>
+    <p class="${pct>=70?'okc':'badc'}">${pct>=70?'Dentro da meta de treino (70%).':'Abaixo da meta de treino (70%). Foque nas erradas abaixo.'}</p>
+    ${erradas.map(id => { const q = qById(id); return `<div class="just" style="border-color:var(--bad);background:var(--bads)"><span class="tag">${MAT[q.m].n}</span><br><b>${esc(q.q)}</b><br>Você marcou: ${QZ.ans[id]!==undefined?esc(q.o[QZ.ans[id]]):'<i>em branco</i>'}<br>Certa: <b>${esc(q.o[q.c])}</b><br><span class="small">${esc(q.j||'')}</span></div>`; }).join('')}
+    <div style="margin-top:12px"><button class="btn" onclick="go('err')">Escrever justificativas dos erros</button><button class="btn g" onclick="sair()">Voltar</button></div></div>`;
+}
+
+function vAddQ(){
+  return `<div class="card"><h2>Adicionar questão sua (da apostila ou simulado)</h2>
+    <label>Matéria</label><select id="nq-m">${Object.keys(MAT).map(m=>`<option value="${m}">${MAT[m].n}</option>`).join('')}</select>
+    <label>Enunciado</label><textarea id="nq-q" rows="3"></textarea>
+    <label>Alternativas (uma por linha)</label><textarea id="nq-o" rows="5"></textarea>
+    <label>Número da alternativa correta (1 = primeira linha)</label><input id="nq-c" type="number" min="1" value="1">
+    <label>Justificativa (por que a certa é a certa)</label><textarea id="nq-j" rows="2"></textarea>
+    <button class="btn" onclick="addQ()">Salvar questão</button> <span id="nq-msg" class="small"></span>
+    ${S.custom.length ? `<h3>Suas questões</h3><table>${S.custom.map(q=>`<tr><td>${MAT[q.m].n}</td><td>${esc(q.q)}</td><td><button class="btn g" onclick="delQ('${q.id}')">apagar</button></td></tr>`).join('')}</table>` : ''}</div>`;
+}
+function addQ(){
+  const g = id => document.getElementById(id).value.trim();
+  const o = g('nq-o').split('\n').map(s=>s.trim()).filter(Boolean), c = parseInt(g('nq-c'),10) - 1;
+  const msg = document.getElementById('nq-msg');
+  if (!g('nq-q') || o.length < 2 || isNaN(c) || c < 0 || c >= o.length) { msg.textContent = 'Preencha o enunciado, pelo menos 2 alternativas e um número válido.'; msg.className = 'small badc'; return; }
+  S.custom.push({id:'u'+Date.now(), m:g('nq-m'), q:g('nq-q'), o, c, j:g('nq-j')}); save(); render();
+}
+function delQ(id){ S.custom = S.custom.filter(q => q.id !== id); delete S.q[id]; save(); render(); }
+
+// ---------- Flashcards
+function startFc(m){
+  const idx = FC.map((_,i)=>i).filter(i => !m || FC[i][2] === m);
+  const box = i => S.fc[i] || 1;
+  const ord = shuffle(idx).sort((a,b) => box(a) - box(b));
+  FCS = {m, ord, i:0, vira:false}; go('fc');
+}
+function vFc(){
+  const cont = [1,2,3].map(b => FC.filter((_,i)=>(S.fc[i]||1)===b).length);
+  const head = `<div class="card"><h2>Flashcards</h2><p class="small mut">Caixa 1 = não sei · caixa 2 = quase · caixa 3 = sei. Errou volta para a 1. As da caixa 1 aparecem primeiro.<br>Agora: caixa 1: <b>${cont[0]}</b> · caixa 2: <b>${cont[1]}</b> · caixa 3: <b>${cont[2]}</b></p>
+    <button class="btn" onclick="startFc('')">Todos</button>${Object.keys(MAT).map(m=>`<button class="btn g" onclick="startFc('${m}')">${MAT[m].n}</button>`).join('')}</div>`;
+  if (!FCS) return head;
+  if (FCS.i >= FCS.ord.length) return head + `<div class="card"><h2>Rodada terminada</h2><button class="btn" onclick="startFc(FCS.m)">De novo</button></div>`;
+  const k = FCS.ord[FCS.i], c = FC[k];
+  return head + `<div class="card"><div class="row"><span class="tag">${MAT[c[2]].n}</span><span class="small mut">${FCS.i+1}/${FCS.ord.length} · caixa ${S.fc[k]||1}</span></div>
+    <div class="fc" onclick="FCS.vira=true;render()">${FCS.vira ? `<div><div class="mut small">${esc(c[0])}</div><div style="margin-top:8px"><b>${esc(c[1])}</b></div></div>` : `<b>${esc(c[0])}</b>`}</div>
+    ${FCS.vira ? `<button class="btn bad" onclick="fcResp(false)">Errei</button><button class="btn ok" onclick="fcResp(true)">Acertei</button>` : `<button class="btn" onclick="FCS.vira=true;render()">Mostrar resposta</button>`}</div>`;
+}
+function fcResp(ok){ const k = FCS.ord[FCS.i]; S.fc[k] = ok ? Math.min(3,(S.fc[k]||1)+1) : 1; save(); FCS.i++; FCS.vira = false; render(); }
+
+// ---------- Erros
+function errIds(){ return allQ().filter(q => S.q[q.id] && S.q[q.id].last === false).map(q => q.id); }
+function vErr(){
+  const ids = errIds();
+  const outras = allQ().filter(q => S.q[q.id] && S.q[q.id].last && S.q[q.id].ok < S.q[q.id].n).length;
+  return `<div class="card"><h2>Caderno de erros (${ids.length})</h2>
+    <p class="small mut">Aqui ficam as questões cuja última resposta foi errada. Escreva com suas palavras por que a certa é a certa. Quando acertar de novo, ela sai da lista. ${outras?`(${outras} já foram recuperadas.)`:''}</p>
+    ${ids.length?'<button class="btn bad" onclick="treinoErros()">Refazer só as erradas</button>':''}</div>
+    ${ids.map(id => { const q = qById(id); return `<div class="card"><span class="tag">${MAT[q.m].n}</span> <span class="small mut">errou ${S.q[id].n-S.q[id].ok} de ${S.q[id].n}</span>
+      <p><b>${esc(q.q)}</b></p><p>Certa: <b class="okc">${esc(q.o[q.c])}</b></p><p class="small">${esc(q.j||'')}</p>
+      <label>Minha justificativa</label><textarea rows="2" oninput="S.notes['${id}']=this.value;save()">${esc(S.notes[id]||'')}</textarea></div>`; }).join('')}`;
+}
+
+// ---------- Desempenho
+function vDesemp(){
+  const linhas = Object.keys(MAT).map(m => { const s = statMat(m); return `<tr><td>${MAT[m].n}</td><td>${MAT[m].p}</td><td>${s.feitas}/${s.tot}</td>
+    <td>${s.pct===null?'<span class="mut">—</span>':`<span class="${s.pct>=70?'okc':'badc'}">${s.pct}%</span>`}</td><td><div class="bar"><i style="width:${s.pct||0}%"></i></div></td></tr>`; }).join('');
+  const piores = Object.keys(MAT).map(m=>[m,statMat(m).pct]).filter(x=>x[1]!==null).sort((a,b)=>a[1]-b[1]||MAT[b[0]].p-MAT[a[0]].p);
+  return `<div class="card"><h2>Por matéria</h2><table><tr><th>Matéria</th><th>Questões na prova</th><th>Vistas</th><th>Acerto</th><th></th></tr>${linhas}</table>
+    ${piores.length?`<p>Prioridade agora: <b>${MAT[piores[0][0]].n}</b>${piores[1]?` e depois <b>${MAT[piores[1][0]].n}</b>`:''}.</p>`:'<p class="mut">Faça alguns treinos para aparecer aqui.</p>'}</div>
+    <div class="card"><h2>Simulados</h2>${S.sims.length?`<table><tr><th>Dia</th><th>Nota</th><th>Tempo</th><th>Por matéria</th></tr>${S.sims.map(s=>`<tr><td>${fmtDia(s.d)}</td><td><b>${s.ok}/${s.tot}</b> (${Math.round(s.ok/s.tot*100)}%)</td><td>${s.min} min</td><td class="small">${Object.keys(s.by).map(m=>`${MAT[m]?MAT[m].n:m}: ${s.by[m][0]}/${s.by[m][1]}`).join(' · ')}</td></tr>`).join('')}</table>`:'<p class="mut">Nenhum simulado completo ainda.</p>'}</div>
+    <div class="card"><h2>Backup do progresso</h2><p class="small mut">O progresso fica salvo neste navegador. Para não perder (ou levar para outro navegador), exporte de vez em quando.</p>
+    <button class="btn g" onclick="exporta()">Exportar progresso</button><label class="btn g" style="display:inline-block">Importar<input type="file" accept=".json" style="display:none" onchange="importa(this)"></label>
+    <button class="btn bad" onclick="zerar(this)">Zerar tudo</button></div>`;
+}
+function exporta(){ const b = new Blob([JSON.stringify(S,null,1)], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'progresso-susep-'+todayISO()+'.json'; a.click(); }
+function importa(inp){ const f = inp.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { try { S = Object.assign({days:{},q:{},fc:{},sims:[],notes:{},custom:[]}, JSON.parse(r.result)); save(); render(); } catch(e) { inp.parentNode.textContent = 'Arquivo inválido'; } }; r.readAsText(f); }
+function zerar(b){ if (b.dataset.c) { S = {days:{},q:{},fc:{},sims:[],notes:{},custom:[]}; save(); render(); } else { b.dataset.c = 1; b.textContent = 'Clique de novo para confirmar'; } }
+
+render();
+</script>
+</body>
+</html>
